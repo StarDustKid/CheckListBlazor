@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace api
 {
@@ -19,8 +20,8 @@ namespace api
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-
-            string responseMessage = "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
+            var http=new HttpClient();
+            string responseMessage = await http.GetStringAsync("https://ja.wikipedia.org/wiki/%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%82%B5%E3%82%A4%E3%83%88");
 
             return new OkObjectResult(responseMessage);
         }
