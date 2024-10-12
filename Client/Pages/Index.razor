@@ -1,12 +1,29 @@
 ﻿@page "/"
+@inject HttpClient http
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>@text</h1>
 
-Welcome to your new app.
+<p>Welcome to your new app.</p>
 
-@code{
+@code {
+    private string text = "Loading...";
 
-private string text=
+    protected override async Task OnInitializedAsync()
+    {
+        await GetText();
+    }
+
+    private async Task GetText()
+    {
+        try
+        {
+            text = await http.GetStringAsync("api/Function1");
+        }
+        catch (Exception ex)
+        {
+            text = $"エラーが発生しました: {ex.Message}";
+        }
+    }
 }
