@@ -62,3 +62,54 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+.checklist-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.checklist-items {
+    margin-bottom: 20px;
+}
+
+.checklist-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: move;
+}
+
+.item-content {
+    display: flex;
+    flex-direction: column;
+}
+
+    .item-content input,
+    .item-content textarea {
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+    }
+
+    .item-content textarea {
+        min-height: 60px;
+    }
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+.blue-background-class {
+    background-color: #e6f2ff;
+}

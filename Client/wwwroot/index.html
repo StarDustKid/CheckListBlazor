@@ -20,6 +20,21 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        window.initializeDragAndDrop = function () {
+            const container = document.getElementById('checklist-items');
+            if (container) {
+                new Sortable(container, {
+                    animation: 150,
+                    ghostClass: 'blue-background-class'
+                });
+            }
+        }
+        window.preventDefault = (e) => {
+            e.preventDefault();
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </body>
 
 </html>

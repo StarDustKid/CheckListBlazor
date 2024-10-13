@@ -1,0 +1,183 @@
+@page "/create-checklist"
+
+<h3>チェックリスト作成</h3>
+
+<div class="checklist-container">
+    <div class="checklist-header">
+        <span class="order-header">順序</span>
+        <span class="title-header">タイトル</span>
+        <span class="description-header">説明</span>
+        <span class="time-header">予想時間（分）</span>
+    </div>
+    <div class="checklist-items" id="checklist-items">
+        @for (int i = 0; i < checklist.ListItems.Count; i++)
+        {
+            var item = checklist.ListItems[i];
+            var itemIndex = i;
+            <div class="checklist-item @(draggedIndex == itemIndex ? "dragging" : "")"
+                 draggable="true"
+                 @ondragstart="@(() => HandleDragStart(itemIndex))"
+                 @ondragenter="@(() => HandleDragEnter(itemIndex))"
+                 @ondragover:preventDefault
+                 @ondrop="@(() => HandleDrop(itemIndex))">
+                <span class="order">@(itemIndex + 1)</span>
+                <input type="text" @bind="item.Title" placeholder="タイトル" />
+                <input type="text" @bind="item.Description" placeholder="説明" />
+                <input type="number" @bind="item.EstimatedTime_Minute" placeholder="予想時間（分）" />
+            </div>
+        }
+    </div>
+    <button @onclick="AddNewItem">新しい項目を追加</button>
+</div>
+
+<button @onclick="SaveChecklist">チェックリストを保存</button>
+
+@code {
+    private CheckList checklist = new CheckList
+    {
+        Id = Guid.NewGuid().ToString(),
+        CreatedAt = DateTime.Now,
+        LastModified = DateTime.Now,
+        ListItems = new List<CheckObject>()
+    };
+
+    private int? draggedIndex;
+
+    private void AddNewItem()
+    {
+        checklist.ListItems.Add(new CheckObject
+        {
+            Order = checklist.ListItems.Count,
+            Title = "",
+            Description = "",
+            EstimatedTime_Minute = 0
+        });
+        StateHasChanged();
+    }
+
+    private void HandleDragStart(int index)
+    {
+        draggedIndex = index;
+    }
+
+    private void HandleDragEnter(int index)
+    {
+        if (draggedIndex.HasValue && draggedIndex.Value != index)
+        {
+            var draggedItem = checklist.ListItems[draggedIndex.Value];
+            checklist.ListItems.RemoveAt(draggedIndex.Value);
+            checklist.ListItems.Insert(index, draggedItem);
+
+            if (index < draggedIndex.Value)
+                draggedIndex = draggedIndex.Value + 1;
+            else
+                draggedIndex = index;
+
+            StateHasChanged();
+        }
+    }
+
+    private void HandleDrop(int index)
+    {
+        draggedIndex = null;
+        UpdateOrder();
+        StateHasChanged();
+    }
+
+    private void UpdateOrder()
+    {
+        for (int i = 0; i < checklist.ListItems.Count; i++)
+        {
+            checklist.ListItems[i].Order = i;
+        }
+    }
+
+    private void SaveChecklist()
+    {
+        checklist.LastModified = DateTime.Now;
+        // ここでチェックリストを保存するロジックを実装します
+        Console.WriteLine("チェックリストが保存されました");
+    }
+}
+
+<style>
+    .checklist-container {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .checklist-header,
+    .checklist-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .checklist-header {
+        font-weight: bold;
+        background-color: #f8f9fa;
+    }
+
+    .checklist-item {
+        background-color: #ffffff;
+        transition: background-color 0.3s;
+    }
+
+    .checklist-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .checklist-item.dragging {
+        opacity: 0.5;
+    }
+
+    .order-header,
+    .order {
+        flex: 0 0 50px;
+        text-align: center;
+    }
+
+    .title-header,
+    .checklist-item input[type="text"]:first-of-type {
+        flex: 1 1 30%;
+    }
+
+    .description-header,
+    .checklist-item input[type="text"]:nth-of-type(2) {
+        flex: 1 1 50%;
+    }
+
+    .time-header,
+    .checklist-item input[type="number"] {
+        flex: 0 0 100px;
+        text-align: center;
+    }
+
+    .checklist-item input {
+        border: none;
+        background: transparent;
+        padding: 5px;
+    }
+
+    .checklist-item input:focus {
+        outline: none;
+        background-color: #e9ecef;
+    }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    }
+</style>
